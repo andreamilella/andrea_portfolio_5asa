@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Il Mio Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:ital,wght@0,300;0,400;1,300&family=Caveat:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #1e3a2f;
+    --bg-deep: #172d24;
+    --surface: #243d31;
+    --accent1: #f5c842;
+    --accent2: #e8855a;
+    --accent3: #7ecfb0;
+    --text: #f0ece4;
+    --muted: #8aab99;
+    --card-bg: #1f3c2e;
+    --chalk: rgba(240,236,228,0.07);
+    --chalk-line: rgba(240,236,228,0.08);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+    cursor: auto;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* CHALK TEXTURE OVERLAY */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background-image:
+      repeating-linear-gradient(0deg, transparent, transparent 39px, var(--chalk-line) 39px, var(--chalk-line) 40px),
+      repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(240,236,228,0.02) 39px, rgba(240,236,228,0.02) 40px);
+    opacity: 0.4;
+  }
+
+  /* Grain texture */
+  body::after {
+    content: '';
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    opacity: 0.5;
+  }
+
+  /* FLOATING CHALK SYMBOLS */
+  .chalk-symbol {
+    position: fixed; pointer-events: none; z-index: 1;
+    color: rgba(240,236,228,0.1);
+    font-family: 'Caveat', cursive;
+    font-size: 1.4rem;
+    user-select: none;
+    animation: floatSym 12s ease-in-out infinite alternate;
+  }
+  @keyframes floatSym {
+    from { transform: translateY(0) rotate(-3deg); }
+    to   { transform: translateY(-18px) rotate(3deg); }
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1.1rem 3rem;
+    background: rgba(23,45,36,0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(240,236,228,0.08);
+  }
+  .nav-logo {
+    font-family: 'Caveat', cursive;
+    font-weight: 600; font-size: 1.4rem;
+    color: var(--accent1);
+    letter-spacing: 0.02em;
+  }
+  .nav-links { display: flex; gap: 2rem; }
+  .nav-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 0.82rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    transition: color .2s;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .nav-links a:hover { color: var(--text); }
+
+  /* SECTIONS */
+  section {
+    min-height: 100vh; padding: 8rem 3rem 5rem;
+    max-width: 1100px; margin: 0 auto;
+    position: relative; z-index: 2;
+  }
+
+  /* HERO */
+  #hero {
+    display: flex; flex-direction: column; justify-content: center;
+    position: relative; overflow: visible;
+    padding-top: 6rem;
+    max-width: 100%; padding-left: 8vw; padding-right: 8vw;
+  }
+  .hero-eyebrow {
+    font-family: 'Caveat', cursive;
+    font-size: 1.1rem;
+    color: var(--accent3);
+    margin-bottom: 1rem;
+    opacity: 0; animation: fadeUp .6s .2s forwards;
+    letter-spacing: 0.04em;
+  }
+  .hero-name {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(3rem, 10vw, 7rem);
+    font-weight: 800;
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+    opacity: 0; animation: fadeUp .7s .35s forwards;
+  }
+  .hero-name span { color: var(--accent1); }
+  .hero-sub {
+    margin-top: 2rem; font-size: 1.05rem;
+    color: var(--muted); max-width: 480px;
+    font-style: italic;
+    opacity: 0; animation: fadeUp .7s .5s forwards;
+  }
+  .hero-cta {
+    margin-top: 3rem; display: flex; gap: 1rem; flex-wrap: wrap;
+    opacity: 0; animation: fadeUp .7s .65s forwards;
+  }
+  .btn {
+    display: inline-block; padding: .8rem 2rem;
+    border-radius: 6px;
+    font-size: 0.82rem; font-weight: 400;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    cursor: pointer; transition: transform .2s, box-shadow .2s;
+    text-decoration: none; font-family: 'DM Sans', sans-serif;
+  }
+  .btn:hover { transform: translateY(-3px); }
+  .btn-primary {
+    background: var(--accent1); color: #1a2e23;
+    font-weight: 600;
+    box-shadow: 0 0 24px rgba(245,200,66,0.25);
+  }
+  .btn-primary:hover { box-shadow: 0 0 40px rgba(245,200,66,0.45); }
+  .btn-ghost {
+    border: 1.5px solid rgba(240,236,228,0.2);
+    color: var(--text); background: transparent;
+  }
+  .btn-ghost:hover { border-color: rgba(240,236,228,0.45); }
+
+  /* Chalk blobs (soft glows, no hard shapes) */
+  .blob {
+    position: absolute; border-radius: 50%;
+    filter: blur(90px); pointer-events: none; z-index: 0;
+    animation: drift 9s ease-in-out infinite alternate;
+  }
+  .blob1 { width: 420px; height: 420px; background: rgba(126,207,176,0.12); top: -80px; right: -80px; }
+  .blob2 { width: 300px; height: 300px; background: rgba(245,200,66,0.1); bottom: 80px; left: -60px; animation-delay: -4s; }
+  .blob3 { width: 260px; height: 260px; background: rgba(232,133,90,0.08); top: 40%; right: 8%; animation-delay: -6s; }
+
+  /* SECTION LABELS */
+  .section-label {
+    font-family: 'Caveat', cursive;
+    font-size: 1rem; letter-spacing: 0.1em;
+    color: var(--accent3);
+    margin-bottom: .8rem;
+    display: flex; align-items: center; gap: .8rem;
+  }
+  .section-label::after {
+    content: ''; flex: 1; max-width: 50px;
+    height: 1px; background: var(--accent3); opacity: .35;
+  }
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 700; letter-spacing: -0.03em;
+    line-height: 1.1; margin-bottom: 2rem;
+  }
+
+  /* ABOUT */
+  #about { display: flex; flex-direction: column; justify-content: center; }
+  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; margin-top: 3rem; }
+  .about-text p { color: var(--muted); margin-bottom: 1rem; }
+  .about-text p strong { color: var(--text); font-weight: 400; }
+
+  .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .stat-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(240,236,228,0.1);
+    border-radius: 12px; padding: 1.5rem;
+    transition: border-color .3s, transform .3s, background .3s;
+    position: relative; overflow: hidden;
+  }
+  .stat-card::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(245,200,66,0.05), transparent);
+    opacity: 0; transition: opacity .3s;
+  }
+  .stat-card:hover { border-color: rgba(245,200,66,0.4); transform: translateY(-4px); background: rgba(255,255,255,0.07); }
+  .stat-card:hover::before { opacity: 1; }
+  .stat-num {
+    font-family: 'Syne', sans-serif; font-size: 2.2rem;
+    font-weight: 800; color: var(--accent1);
+  }
+  .stat-label { font-size: 0.78rem; color: var(--muted); margin-top: .3rem; letter-spacing: 0.05em; }
+
+  /* TIMELINE */
+  #esperienza { display: flex; flex-direction: column; justify-content: center; }
+  .timeline { margin-top: 3rem; position: relative; }
+  .timeline::before {
+    content: ''; position: absolute; left: 0; top: 0; bottom: 0;
+    width: 1px;
+    background: repeating-linear-gradient(to bottom, rgba(240,236,228,0.15) 0px, rgba(240,236,228,0.15) 6px, transparent 6px, transparent 12px);
+  }
+  .tl-item {
+    padding-left: 2.5rem; margin-bottom: 3rem; position: relative;
+    opacity: 0; transform: translateX(-20px);
+    transition: opacity .5s, transform .5s;
+  }
+  .tl-item.visible { opacity: 1; transform: translateX(0); }
+  .tl-dot {
+    position: absolute; left: -5px; top: 7px;
+    width: 11px; height: 11px; border-radius: 50%;
+    background: var(--accent3);
+    border: 2px solid var(--bg-deep);
+    transition: background .3s, transform .3s;
+  }
+  .tl-item:hover .tl-dot { background: var(--accent1); transform: scale(1.5); }
+  .tl-year {
+    font-family: 'Caveat', cursive;
+    font-size: 0.95rem; color: var(--accent1);
+    letter-spacing: 0.05em; margin-bottom: .3rem;
+  }
+  .tl-title { font-family: 'Syne', sans-serif; font-size: 1.15rem; font-weight: 700; margin-bottom: .4rem; }
+  .tl-desc { font-size: 0.9rem; color: var(--muted); }
+
+  /* CERTIFICATI */
+  #certificati { display: flex; flex-direction: column; justify-content: center; }
+  .certs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1.5rem; margin-top: 3rem; }
+  .cert-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(240,236,228,0.1);
+    border-radius: 14px; overflow: hidden;
+    cursor: pointer;
+    transition: transform .3s, border-color .3s, box-shadow .3s;
+    text-decoration: none; color: var(--text); display: block; position: relative;
+  }
+  .cert-card:hover {
+    transform: translateY(-8px) scale(1.015);
+    border-color: rgba(245,200,66,0.5);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.35), 0 0 20px rgba(245,200,66,0.1);
+  }
+  .cert-thumb-placeholder {
+    width: 100%; aspect-ratio: 16/9;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 3rem;
+    background: rgba(255,255,255,0.03);
+    border-bottom: 1px solid rgba(240,236,228,0.07);
+  }
+  .cert-overlay {
+    position: absolute; inset: 0;
+    background: rgba(23,45,36,0.65);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; transition: opacity .3s;
+  }
+  .cert-overlay-text {
+    font-family: 'Caveat', cursive; font-size: 1rem;
+    letter-spacing: 0.1em;
+    background: var(--accent1); color: #1a2e23;
+    padding: .5rem 1.4rem; border-radius: 4px;
+    font-weight: 600;
+  }
+  .cert-card:hover .cert-overlay { opacity: 1; }
+  .cert-info { padding: 1.1rem; }
+  .cert-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.92rem; }
+  .cert-meta { font-size: 0.78rem; color: var(--muted); margin-top: .3rem; }
+
+  /* CONTATTI */
+  #contatti { display: flex; flex-direction: column; justify-content: center; }
+  .contact-big {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2rem, 6vw, 4.5rem);
+    font-weight: 800; letter-spacing: -0.04em;
+    line-height: 1.05; margin-top: 2rem;
+  }
+  .contact-big span {
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(240,236,228,0.2);
+    transition: color .3s, -webkit-text-stroke .3s;
+  }
+  .contact-big span:hover { color: var(--accent1); -webkit-text-stroke: 1px var(--accent1); }
+  .contact-links { display: flex; gap: 1.2rem; margin-top: 3rem; flex-wrap: wrap; }
+  .contact-pill {
+    display: inline-flex; align-items: center; gap: .6rem;
+    padding: .65rem 1.3rem;
+    border: 1px solid rgba(240,236,228,0.12);
+    border-radius: 6px;
+    font-size: 0.84rem; color: var(--muted);
+    text-decoration: none; cursor: pointer;
+    transition: color .2s, border-color .2s, transform .2s;
+  }
+  .contact-pill:hover { color: var(--text); border-color: rgba(240,236,228,0.35); transform: translateY(-2px); }
+
+  /* FOOTER */
+  footer {
+    text-align: center; padding: 2rem; position: relative; z-index: 2;
+    font-size: 0.75rem; color: var(--muted);
+    border-top: 1px solid rgba(240,236,228,0.07);
+    font-family: 'Caveat', cursive; font-size: 0.95rem;
+    letter-spacing: 0.04em;
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(28px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes drift {
+    from { transform: translate(0,0) scale(1); }
+    to   { transform: translate(25px, 18px) scale(1.08); }
+  }
+
+  @media (max-width: 700px) {
+    nav { padding: 1rem 1.5rem; }
+    section { padding: 7rem 1.5rem 4rem; }
+    .about-grid { grid-template-columns: 1fr; gap: 2rem; }
+    .nav-links { gap: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- FLOATING CHALK SYMBOLS -->
+<span class="chalk-symbol" style="top:12%;left:4%;animation-delay:0s">∑ x²</span>
+<span class="chalk-symbol" style="top:28%;right:5%;animation-delay:-2s;font-size:1.1rem"></span>
+<span class="chalk-symbol" style="top:45%;left:3%;animation-delay:-4s">E = mc²</span>
+<span class="chalk-symbol" style="top:62%;right:4%;animation-delay:-1s;font-size:1rem">π ≈ 3.14</span>
+<span class="chalk-symbol" style="top:78%;left:6%;animation-delay:-6s">★ ★ ★</span>
+<span class="chalk-symbol" style="top:88%;right:7%;animation-delay:-3s;font-size:1rem">✓  Ottimo!</span>
+<span class="chalk-symbol" style="top:20%;right:14%;animation-delay:-5s;font-size:0.9rem">H₂O</span>
+<span class="chalk-symbol" style="top:55%;left:7%;animation-delay:-7s;font-size:0.85rem">a² + b² = c²</span>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">✏ Portfolio</div>
+  <div class="nav-links">
+    <a href="#about">Chi sono</a>
+    <a href="#esperienza">Percorso</a>
+    <a href="#certificati">Certificati</a>
+    <a href="#contatti">Contatti</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="blob blob1"></div>
+  <div class="blob blob2"></div>
+  <div class="blob blob3"></div>
+  <p class="hero-eyebrow">Studente · Curioso · In crescita</p>
+  <h1 class="hero-name">Ciao,<br>sono <span>Andrea Milella</span></h1>
+  <p class="hero-sub">Un portfolio che racconta il mio percorso scolastico, le mie esperienze e quello che ho imparato.</p>
+  <div class="hero-cta">
+    <a href="#about" class="btn btn-primary">Scopri di più</a>
+    <a href="#certificati" class="btn btn-ghost">I miei certificati</a>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <p class="section-label">Chi sono</p>
+  <h2 class="section-title">Una persona,<br>tante passioni.</h2>
+  <div class="about-grid">
+    <div class="about-text">
+      <p>Sono un ragazzo che frequenta il liceo scientifico scienze applicate. — <strong>Mi piace studiare materie legate alla tecnologia e all’informatica, ma anche le scienze, perché le trovo interessanti e utili per capire meglio il mondo che ci circonda.</strong>. Durante questi anni di scuola ho condiviso molte esperienze importanti con la mia classe, crescendo sia nello studio sia come persona..</p>
+      <p>Nel tempo libero vado in palestra e frequento un corso di inglese,  <strong>attività che mi aiutano a migliorarmi e a imparare cose nuove.</strong>.</p>
+      <p>In futuro vorrei iscrivermi all’università di informatica per continuare a coltivare questa mia passione..</p>
+    </div>
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-num">5°</div>
+        <div class="stat-label">Anno scolastico</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">3+</div>
+        <div class="stat-label">Certificati ottenuti</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">5+</div>
+        <div class="stat-label">PCTO svolti</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num">∞</div>
+        <div class="stat-label">Curiosità</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ESPERIENZA -->
+<section id="esperienza">
+  <p class="section-label">Percorso</p>
+  <h2 class="section-title">Il mio<br>cammino.</h2>
+  <div class="timeline">
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-year">2025 – oggi</div>
+      <div class="tl-title">Ultimo anno di liceo</div>
+      <div class="tl-desc">Il quinto anno di liceo è stato un periodo intenso e significativo, caratterizzato dalla preparazione all’esame finale, da maggiore maturità e dagli ultimi momenti condivisi con la classe. Un anno importante, pieno di emozioni e ricordi.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-year">2023</div>
+      <div class="tl-title">Un'esperienza che ricordo</div>
+      <div class="tl-desc">Tra le varie uscite didattiche e corsi extrascolastici, i ricordi più belli della scuola sono legati ai momenti passati con i compagni, alle gite, alle risate in classe e alle esperienze condivise. Sono momenti semplici ma importanti, che restano nel tempo. </div>.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-year">2021</div>
+      <div class="tl-title">L'inizio del liceo</div>
+      <div class="tl-desc">Il primo anno di liceo è stato un anno impegnativo ma anche interessante. Nuove materie, nuovi compagni e nuove esperienze hanno reso questo periodo importante e utile per crescere e maturare.</div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-year">Prima ancora</div>
+      <div class="tl-title">Le basi</div>
+      <div class="tl-desc">Medie, elementari, i primi ricordi scolastici, l'inizio di tutto.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CERTIFICATI -->
+<section id="certificati">
+  <p class="section-label">Certificati</p>
+  <h2 class="section-title">I miei<br>traguardi.</h2>
+  <div class="certs-grid">
+    <a href="https://drive.google.com/file/d/1b8jazraPI0nWrzgQwkfJDGDEgOO01L6q/view?usp=share_link" target="_blank" class="cert-card">
+      <div class="cert-thumb-placeholder">📜</div>
+      <div class="cert-overlay"><span class="cert-overlay-text">Apri PDF</span></div>
+      <div class="cert-info">
+        <div class="cert-title">Certificato B2 di Inglese</div>
+        <div class="cert-meta">Cambridge Assessment · 2025</div>
+      </div>
+    </a>
+    <a href="https://drive.google.com/file/d/1Beh4VD3MnEdcd6Wu0hT5fIwVjaRtJyhh/view?usp=share_link" target="_blank" class="cert-card">
+      <div class="cert-thumb-placeholder">💻</div>
+      <div class="cert-overlay"><span class="cert-overlay-text">Apri PDF</span></div>
+      <div class="cert-info">
+        <div class="cert-title">Certificazione ICDL</div>
+        <div class="cert-meta">AICA · 2025</div>
+      </div>
+    </a>
+  </div>
+</section>
+
+<!-- CONTATTI -->
+<section id="contatti">
+  <p class="section-label">Contatti</p>
+  <div class="contact-big">
+    Parliamo<br><span>insieme.</span>
+  </div>
+  <div class="contact-links">
+    <a href="mailto:andreamilella224@gmail.com" class="contact-pill">✉ andreamilella224@gmail.com</a>
+  </div>
+</section>
+
+<footer>✏ Fatto con ♥ per il mio esame · <span id="year"></span></footer>
+
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  const tlItems = document.querySelectorAll('.tl-item');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) setTimeout(() => entry.target.classList.add('visible'), i * 120);
+    });
+  }, { threshold: 0.2 });
+  tlItems.forEach(item => observer.observe(item));
+
+  document.addEventListener('mousemove', e => {
+    const x = (e.clientX / window.innerWidth - 0.5) * 28;
+    const y = (e.clientY / window.innerHeight - 0.5) * 28;
+    document.querySelectorAll('.blob').forEach((b, i) => {
+      const f = (i + 1) * 0.35;
+      b.style.transform = `translate(${x*f}px, ${y*f}px)`;
+    });
+    document.querySelectorAll('.chalk-symbol').forEach((s, i) => {
+      const f = ((i % 3) + 1) * 0.08;
+      s.style.transform += ` translate(${x*f}px, ${y*f}px)`;
+    });
+  });
+</script>
+</body>
+</html>
